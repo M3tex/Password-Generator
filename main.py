@@ -1,5 +1,6 @@
 import secrets
 import string
+import sys
 
 
 UPPERCASE, LOWERCASE = string.ascii_uppercase, string.ascii_lowercase
@@ -13,17 +14,17 @@ def gen_password(n: int, chars=BASIC_SPECIAL_CHARS):
     - One uppercase letter
     - One lowercase letter
     - One number
-    - One special character"""
+    - One special character
+    """
     if n < 4:
         print("Invalid password length (< 4). Cannot satisfy conditions.")
         print("It is strongly advised to use at least 10 characters")
-        return
+        sys.exit(1)
     
     initialisation = [UPPERCASE, LOWERCASE, '0123456789', chars]
-    
     password = []
 
-    # We insert letters to be sure that we satisfy the conditions (we'll shuffle later)
+    # We insert characters to be sure that we satisfy the conditions (we'll shuffle later)
     for el in initialisation:
         rdm_idx = secrets.randbelow(len(el))
         password.append(el[rdm_idx])
@@ -41,7 +42,8 @@ def gen_password(n: int, chars=BASIC_SPECIAL_CHARS):
 
 def csprng_shuffle(L: list):
     """Shuffles a list in a cryptographically safe way.
-    We'll only use the secrets module to generate randomness"""
+    We'll only use the secrets module to generate randomness
+    """
     for i in range(len(L)):
         rdm_idx = secrets.randbelow(len(L))
         swap(L, i, rdm_idx)
