@@ -1,6 +1,7 @@
 import secrets
 import string
 import sys
+import time
 
 
 UPPERCASE, LOWERCASE = string.ascii_uppercase, string.ascii_lowercase
@@ -8,7 +9,7 @@ BASIC_SPECIAL_CHARS = "!@#$%^&*()_-+={[}]|\:;'<,>.?/"
 
 
 def gen_password(n: int, chars=BASIC_SPECIAL_CHARS):
-    """Generate a password of length n in a cryptographically safe way.
+    """Generates a password of length n in a cryptographically safe way.
     
     The password will be composed of at least:
     - One uppercase letter
@@ -30,8 +31,8 @@ def gen_password(n: int, chars=BASIC_SPECIAL_CHARS):
         password.append(el[rdm_idx])
 
     while len(password) < n:
-        rdm_char = secrets.randbelow(4)
-        to_pick_from = initialisation[rdm_char]
+        rdm_alphabet = secrets.randbelow(4)
+        to_pick_from = initialisation[rdm_alphabet]
         rdm_idx = secrets.randbelow(len(to_pick_from))
         password.append(to_pick_from[rdm_idx])
 
@@ -42,11 +43,12 @@ def gen_password(n: int, chars=BASIC_SPECIAL_CHARS):
 
 def csprng_shuffle(L: list):
     """Shuffles a list in a cryptographically safe way.
-    We'll only use the secrets module to generate randomness
+    We'll only use the secrets module to generate randomness,
+    and the Fisher Yates shuffle.
     """
-    for i in range(len(L)):
-        rdm_idx = secrets.randbelow(len(L))
-        swap(L, i, rdm_idx)
+    for i in range(len(L) - 1, 0, -1):
+        j = secrets.randbelow(i + 1)
+        swap(L, i, j)
 
 
 def swap(T: list, i: int, j: int):
@@ -90,6 +92,9 @@ if __name__ == "__main__":
     
     # Generating passwords
     print("\nYour passwords:\n")
+    start = time.time()
     for _ in range(nb):
         print(gen_password(size, chars))
     print()
+    end = time.time()
+    print(f"{nb} passwords of size {size} generated in: {round(end - start, 2)} seconds")
